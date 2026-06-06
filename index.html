@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CDK GPT HNQ - Kich hoat ChatGPT Plus bang CDK</title>
+  <meta name="description"
+    content="CDK GPT HNQ ho tro nang cap ChatGPT Plus bang CDK, khong can chia se tai khoan hay mat khau." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <header class="nav">
+    <a class="logo" href="#home" aria-label="CDK GPT HNQ">
+      <span class="logo-mark logo-image">
+        <img src="https://hangngaquan.dev/assets/images/appIconHeader.webp" alt="Hằng Nga Quán logo" />
+      </span>
+      <span class="logo-text">
+        <strong>CDK GPT HNQ</strong>
+        <small>cdkgpt.hangngaquan.dev</small>
+      </span>
+    </a>
+    <nav class="nav-links" aria-label="Dieu huong chinh">
+      <a href="#home">Trang chủ</a>
+      <a href="#features">Ưu điểm</a>
+      <a href="#pricing">Gói CDK</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="nav-login" href="#faq">Bảo mật</a>
+      <a class="nav-cta" href="#pricing">Mua CDK</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="activation-section" id="activate">
+      <div class="section-inner">
+        <div class="activation-card reveal">
+          <div class="activation-copy">
+            <div class="eyebrow">Kích hoạt CDK</div>
+            <h2 class="section-title">Nhập mã CDK để <span class="gradient">kiểm tra lượt</span></h2>
+            <p class="section-desc">Step 1: dán CDK của bạn vào form bên dưới. Hệ thống sẽ kiểm tra mã còn lượt hay
+              không trước khi chuyển sang bước kích hoạt tiếp theo.</p>
+          </div>
+
+          <div class="activation-panel">
+            <div class="step-status">
+              <span class="step-pill active">Step 1 · Kiểm tra CDK</span>
+              <span class="step-pill" id="stepTwoPill">Step 2 · Nhập Session</span>
+            </div>
+
+            <form class="cdk-form" id="cdkForm">
+              <label for="cdkInput">Mã CDK</label>
+              <div class="cdk-input-row">
+                <input id="cdkInput" name="cdk" type="text" placeholder="Nhập mã CDK của bạn" autocomplete="off"
+                  required />
+                <button class="btn btn-primary" type="submit" id="cdkSubmit"><i
+                    class="fa-solid fa-magnifying-glass"></i> Kiểm tra</button>
+              </div>
+            </form>
+
+            <div class="cdk-result" id="cdkResult" aria-live="polite">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>Nhập CDK để bắt đầu kiểm tra trạng thái.</span>
+            </div>
+
+            <div class="step-two-box" id="stepTwoBox" hidden>
+              <form class="session-form" id="sessionForm">
+                <label for="sessionInput">Session / Access Token</label>
+                <div class="session-input-row">
+                  <textarea id="sessionInput" name="session"
+                    placeholder="Dán accessToken (eyJ...) hoặc kéo thả file session.json vào đây" rows="4" required></textarea>
+                  <div class="drag-drop-tip">
+                    <i class="fa-solid fa-file-import"></i> Kéo & thả file <code>.json</code> chứa session vào ô nhập để tự động điền.
+                  </div>
+                  <div id="sessionSummaryBox" class="session-summary-box" hidden>
+                    <h4><i class="fa-solid fa-user-gear"></i> Thông tin tài khoản:</h4>
+                    <div class="summary-grid">
+                      <div class="summary-item">
+                        <span class="label">Tên:</span>
+                        <strong class="value" id="summaryName">-</strong>
+                      </div>
+                      <div class="summary-item">
+                        <span class="label">Email:</span>
+                        <strong class="value" id="summaryEmail">-</strong>
+                      </div>
+                      <div class="summary-item">
+                        <span class="label">Gói dịch vụ:</span>
+                        <strong class="value" id="summaryPlan">-</strong>
+                      </div>
+                      <div class="summary-item">
+                        <span class="label">Cấu trúc:</span>
+                        <strong class="value" id="summaryStructure">-</strong>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="btn btn-primary" type="submit" id="sessionSubmit"><i class="fa-solid fa-bolt"></i> Kích hoạt ngay</button>
+                </div>
+              </form>
+
+              <details class="session-hint">
+                <summary>Hướng dẫn lấy Access Token</summary>
+                <div class="hint-content">
+                  <ol>
+                    <li>Đăng nhập vào trang <a href="https://chatgpt.com" target="_blank" rel="noopener">chatgpt.com</a>
+                    </li>
+                    <li>Mở liên kết <a href="https://chatgpt.com/api/auth/session" target="_blank"
+                        rel="noopener">chatgpt.com/api/auth/session</a> trên trình duyệt</li>
+                    <li>Sao chép trường <code>accessToken</code> (bắt đầu bằng <code>eyJ</code>) hoặc sao chép toàn bộ
+                      đoạn mã JSON và dán vào ô trên</li>
+                  </ol>
+                  <ul>
+                    <li>Chỉ áp dụng cho tài khoản đủ điều kiện dùng thử miễn phí (chưa từng đăng ký Plus trước đây)</li>
+                    <li>Xử lý tự động, mất khoảng 1–10 phút</li>
+                    <li>Cam kết không lưu trữ token, chỉ sử dụng duy nhất cho phiên kích hoạt này</li>
+                    <li>Sau khi báo kích hoạt thành công, OpenAI thường mất 1–5 phút để đồng bộ dữ liệu. Nếu chưa thấy
+                      logo Plus xuất hiện ngay khi tải lại chatgpt.com, vui lòng chờ vài phút rồi tải lại trang</li>
+                  </ul>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero" id="home">
+      <div class="hero-grid"></div>
+      <div class="hero-spot" id="heroSpot"></div>
+      <div class="hero-inner">
+        <div class="hero-content">
+          <div class="hero-badge reveal">
+            <span class="dot"></span>
+            Nâng cấp bằng CDK · Không chia sẻ tài khoản
+          </div>
+          <h1 class="reveal">
+            Nâng cấp ChatGPT Plus bằng CDK <span class="gradient">nhanh, rõ ràng, an toàn</span>.
+          </h1>
+          <p class="sub reveal">
+            CDK GPT HNQ hỗ trợ nâng cấp ChatGPT Plus bằng mã CDK. Bạn chỉ cần có CDK hợp lệ, làm theo hướng dẫn kích
+            hoạt và không cần chia sẻ tài khoản hay mật khẩu.
+          </p>
+          <div class="hero-cta-row reveal">
+            <a href="#pricing" class="btn btn-primary"><i class="fa-solid fa-key"></i> Chọn gói CDK</a>
+            <a href="#faq" class="btn btn-ghost"><i class="fa-solid fa-shield-halved"></i> Xem chính sách bảo mật</a>
+          </div>
+          <div class="hero-stats reveal">
+            <div>
+              <div class="stat-num">Plus</div>
+              <div class="stat-label">Gói nâng cấp</div>
+            </div>
+            <div>
+              <div class="stat-num">0</div>
+              <div class="stat-label">Tài khoản cần chia sẻ</div>
+            </div>
+            <div>
+              <div class="stat-num">CDK</div>
+              <div class="stat-label">Kích hoạt theo mã</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal">
+          <div class="app-window" id="heroMock">
+            <div class="window-head">
+              <div class="dots"><span></span><span></span><span></span></div>
+              <span>cdk-gpt-hnq · activation console</span>
+            </div>
+            <div class="window-body">
+              <div class="link-row">
+                <div class="fake-input">CDK-HNQ-PLUS-2026-XXXX</div>
+                <button>KIỂM TRA</button>
+              </div>
+              <div class="video-card">
+                <div class="poster">
+                  <div class="play"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                </div>
+                <div>
+                  <h3>Yêu cầu kích hoạt ChatGPT Plus</h3>
+                  <p>CDK hợp lệ · Xác minh thanh toán · Hướng dẫn kích hoạt an toàn</p>
+                </div>
+              </div>
+              <div class="episode-list">
+                <div class="episode active"><span>01 · Kiểm tra định dạng CDK</span><b>0%</b><i></i></div>
+                <div class="episode"><span>02 · Xác nhận quyền sử dụng mã</span><b>0%</b><i></i></div>
+                <div class="episode"><span>03 · Tạo phiên hỗ trợ kích hoạt</span><b>0%</b><i></i></div>
+                <div class="episode"><span>04 · Gửi hướng dẫn thao tác chính thức</span><b>0%</b><i></i></div>
+                <div class="episode"><span>05 · Hoàn tất và lưu biên nhận</span><b>0%</b><i></i></div>
+              </div>
+              <button class="download-btn">BẮT ĐẦU KÍCH HOẠT AN TOÀN</button>
+              <div class="speed">
+                <span>Trạng thái</span>
+                <strong><span id="speedVal">92.4</span>% ready</strong>
+                <em>CDK only</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track" id="tickerTrack">
+        <span>CDK GPT HNQ</span>
+        <span>KHÔNG CHIA SẺ TÀI KHOẢN</span>
+        <span>KHÔNG CẦN MẬT KHẨU</span>
+        <span>KÍCH HOẠT THEO MÃ CDK</span>
+        <span>HỖ TRỢ NHANH</span>
+        <span>MINH BẠCH TRẠNG THÁI</span>
+      </div>
+    </div>
+
+    <section class="section" id="features">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="eyebrow reveal">Ưu điểm</div>
+          <h2 class="section-title reveal">Nâng cấp gọn hơn, <span class="gradient">an toàn hơn</span></h2>
+          <p class="section-desc reveal">Tập trung vào trải nghiệm mua mã, xác minh CDK và hướng dẫn kích hoạt rõ ràng
+            cho người dùng.</p>
+        </div>
+        <div class="features-grid">
+          <article class="feature-card reveal"><i class="fa-solid fa-key"></i>
+            <h3>Kiểm tra CDK tức thì</h3>
+            <p>Mã CDK được hiển thị theo định dạng rõ ràng, dễ đối chiếu và theo dõi trạng thái kích hoạt.</p>
+          </article>
+          <article class="feature-card reveal"><i class="fa-solid fa-shield-halved"></i>
+            <h3>Không chia sẻ tài khoản</h3>
+            <p>Quy trình được thiết kế để người dùng tự kiểm soát tài khoản của mình, không cần gửi mật khẩu cho bên thứ
+              ba.</p>
+          </article>
+          <article class="feature-card reveal"><i class="fa-solid fa-bolt"></i>
+            <h3>Quy trình nhanh</h3>
+            <p>Giao diện tối giản giúp người dùng chọn gói, nhận mã và xem các bước kích hoạt chỉ trong vài phút.</p>
+          </article>
+          <article class="feature-card reveal"><i class="fa-solid fa-receipt"></i>
+            <h3>Biên nhận rõ ràng</h3>
+            <p>Mỗi CDK có trạng thái riêng: chưa dùng, đang xử lý, hoàn tất hoặc cần hỗ trợ thủ công.</p>
+          </article>
+          <article class="feature-card reveal"><i class="fa-solid fa-user-lock"></i>
+            <h3>Tôn trọng tài khoản</h3>
+            <p>Người dùng tự đăng nhập qua kênh chính thức của nhà cung cấp, không giao thông tin đăng nhập cho bên thứ
+              ba.</p>
+          </article>
+          <article class="feature-card reveal"><i class="fa-solid fa-headset"></i>
+            <h3>Hỗ trợ tiếng Việt</h3>
+            <p>Đội ngũ Hằng Nga Quán hỗ trợ kiểm tra mã, hướng dẫn thao tác và xử lý lỗi phát sinh.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section steps-section">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="eyebrow reveal">Cách dùng</div>
+          <h2 class="section-title reveal">3 bước để <span class="gradient">kích hoạt CDK</span></h2>
+        </div>
+        <div class="steps">
+          <article class="step reveal"><span>01</span>
+            <h3>Chọn gói CDK</h3>
+            <p>Chọn thời hạn phù hợp, thanh toán và nhận mã CDK từ CDK GPT HNQ.</p>
+          </article>
+          <article class="step reveal"><span>02</span>
+            <h3>Kiểm tra mã</h3>
+            <p>Nhập CDK để xem trạng thái và hướng dẫn kích hoạt tương ứng.</p>
+          </article>
+          <article class="step reveal"><span>03</span>
+            <h3>Kích hoạt an toàn</h3>
+            <p>Làm theo hướng dẫn kích hoạt bằng CDK, không cần chia sẻ tài khoản hay mật khẩu.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pricing">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="eyebrow reveal">Gói CDK</div>
+          <h2 class="section-title reveal">Chọn mã phù hợp, <span class="gradient">kích hoạt đúng nhu cầu</span></h2>
+          <p class="section-desc reveal">Các gói bên dưới là nội dung hiển thị mẫu cho website tĩnh. Bạn có thể thay giá
+            thật sau khi chốt chính sách bán hàng.</p>
+        </div>
+        <div class="promo reveal">CDK GPT HNQ · Domain dự kiến cdkgpt.hangngaquan.dev · Hỗ trợ kiểm tra mã trước khi
+          kích hoạt</div>
+        <div class="pricing-grid">
+          <article class="plan reveal">
+            <h3>Plus Trial</h3><small>Dùng thử ngắn hạn</small><del>99.000đ</del>
+            <div class="price"><strong>79K</strong><span>VNĐ / CDK</span></div>
+            <p>1 mã · hỗ trợ kích hoạt 1 tài khoản</p>
+            <ul>
+              <li>Kiểm tra trạng thái CDK</li>
+              <li>Hướng dẫn kích hoạt từng bước</li>
+              <li>Không cần chia sẻ tài khoản</li>
+              <li>Hỗ trợ cơ bản</li>
+            </ul>
+            <a class="btn btn-primary" href="#">Chọn gói Trial <i class="fa-solid fa-arrow-right"></i></a>
+          </article>
+          <article class="plan popular reveal">
+            <div class="plan-badge">Phổ biến</div>
+            <h3>Plus Standard</h3><small>Cân bằng chi phí</small><del>299.000đ</del>
+            <div class="price"><strong>249K</strong><span>VNĐ</span></div>
+            <p>1 mã · thời hạn tiêu chuẩn</p>
+            <ul>
+              <li>Mọi quyền lợi gói Trial</li>
+              <li>Ưu tiên kiểm tra CDK</li>
+              <li>Biên nhận kích hoạt rõ ràng</li>
+              <li>Hỗ trợ qua Telegram bot</li>
+            </ul>
+            <a class="btn btn-primary" href="#">Chọn Standard <i class="fa-solid fa-arrow-right"></i></a>
+          </article>
+          <article class="plan reveal">
+            <div class="plan-badge gold">Best deal</div>
+            <h3>Plus Pro</h3><small>Ưu tiên hỗ trợ</small><del>499.000đ</del>
+            <div class="price"><strong>399K</strong><span>VNĐ</span></div>
+            <p>1 mã · hỗ trợ ưu tiên</p>
+            <ul>
+              <li>Mọi quyền lợi gói Standard</li>
+              <li>Hỗ trợ nhanh khi lỗi kích hoạt</li>
+              <li>Nhắc gia hạn trước khi hết hạn</li>
+              <li>Phù hợp người dùng thường xuyên</li>
+            </ul>
+            <a class="btn btn-primary" href="#">Chọn Pro <i class="fa-solid fa-arrow-right"></i></a>
+          </article>
+        </div>
+        <p class="pay-note reveal">Thanh toán chuyển khoản · MoMo · Mã được gửi sau khi xác nhận · Giá có thể thay đổi
+          theo chính sách thực tế</p>
+      </div>
+    </section>
+
+    <section class="section" id="why-us">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="eyebrow reveal">Lý do</div>
+          <h2 class="section-title reveal">Tại sao chọn <span class="gradient">CDK GPT HNQ?</span></h2>
+          <p class="section-desc reveal">Một landing page gọn, đẹp và minh bạch cho dịch vụ CDK, đặt bảo mật tài khoản
+            lên trước tốc độ.</p>
+        </div>
+        <div class="why-grid">
+          <article class="why-card reveal"><i class="fa-solid fa-lock"></i>
+            <h3>Bảo mật trước tiên</h3>
+            <p>Người dùng tự giữ tài khoản của mình. CDK GPT HNQ chỉ hỗ trợ mã CDK, trạng thái đơn hàng và hướng dẫn
+              kích hoạt.</p>
+          </article>
+          <article class="why-card reveal"><i class="fa-solid fa-gauge-high"></i>
+            <h3>Trạng thái rõ ràng</h3>
+            <p>Người dùng biết mã đang ở bước nào: kiểm tra, xác nhận, hướng dẫn hay hoàn tất.</p>
+          </article>
+          <article class="why-card reveal"><i class="fa-solid fa-compass"></i>
+            <h3>Hướng dẫn dễ hiểu</h3>
+            <p>Copy ngắn, các bước trực quan, phù hợp cả người mới dùng ChatGPT.</p>
+          </article>
+          <article class="why-card reveal"><i class="fa-solid fa-server"></i>
+            <h3>Sẵn sàng trỏ domain</h3>
+            <p>Nội dung đã đặt theo thương hiệu CDK GPT HNQ và domain cdkgpt.hangngaquan.dev.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="section-inner narrow">
+        <div class="section-header">
+          <div class="eyebrow reveal">FAQ</div>
+          <h2 class="section-title reveal">Câu hỏi <span class="gradient">thường gặp</span></h2>
+        </div>
+        <div class="faq">
+          <details class="faq-item reveal" open>
+            <summary>Nâng cấp ChatGPT Plus bằng CDK là gì?</summary>
+            <p>Đây là quy trình dùng mã CDK hợp lệ để hỗ trợ kích hoạt gói ChatGPT Plus. Người dùng nhận mã, kiểm tra
+              trạng thái và làm theo hướng dẫn để hoàn tất.</p>
+          </details>
+          <details class="faq-item reveal">
+            <summary>Có cần chia sẻ tài khoản hay mật khẩu không?</summary>
+            <p>Không. Bạn chỉ cần mã CDK, mã đơn hàng hoặc thông tin liên hệ để đối chiếu khi cần hỗ trợ.</p>
+          </details>
+          <details class="faq-item reveal">
+            <summary>CDK có tự động nâng cấp tài khoản không?</summary>
+            <p>Nội dung website mô tả quy trình hỗ trợ kích hoạt bằng CDK hợp lệ. Việc đăng nhập và xác nhận tài khoản
+              nên diễn ra qua kênh chính thức, do chính chủ tài khoản thực hiện.</p>
+          </details>
+          <details class="faq-item reveal">
+            <summary>Nếu kích hoạt lỗi thì sao?</summary>
+            <p>Người dùng gửi mã CDK và ảnh trạng thái lỗi không chứa dữ liệu nhạy cảm. Đội hỗ trợ kiểm tra mã, trạng
+              thái thanh toán và hướng dẫn bước tiếp theo.</p>
+          </details>
+          <details class="faq-item reveal">
+            <summary>Website này có backend chưa?</summary>
+            <p>Chưa. Đây là bản web tĩnh HTML, CSS, JS. Các nút và trạng thái hiện là giao diện mẫu để sau này kết nối
+              hệ thống thật nếu cần.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-band">
+      <h2 class="reveal">Sẵn sàng <span class="gradient">kích hoạt Plus</span> bằng CDK an toàn?</h2>
+      <p class="reveal">Chọn gói, nhận mã, kiểm tra trạng thái và làm theo hướng dẫn bảo mật của CDK GPT HNQ.</p>
+      <div class="cta-row reveal">
+        <a href="#pricing" class="btn btn-primary"><i class="fa-solid fa-key"></i> Chọn gói CDK</a>
+        <a href="#faq" class="btn btn-ghost"><i class="fa-solid fa-circle-question"></i> Đọc FAQ</a>
+      </div>
+    </section>
+
+    <section class="support-band">
+      <div class="section-inner narrow">
+        <div class="section-header">
+          <div class="eyebrow reveal">Hỗ trợ</div>
+          <h2 class="section-title reveal">Cần hỗ trợ CDK? <span class="gradient">Liên hệ HNQ.</span></h2>
+          <p class="section-desc reveal">Hỏi đáp về mã, trạng thái đơn hàng hoặc hướng dẫn kích hoạt. Chỉ cần gửi CDK
+            hoặc mã đơn hàng khi cần kiểm tra.</p>
+        </div>
+        <div class="support-row reveal">
+          <a class="support-ct tele" href="https://t.me/hangngaquan_bot" target="_blank" rel="noopener"><i
+              class="fa-brands fa-telegram"></i><span><b>Telegram Bot</b><em>@hangngaquan_bot</em></span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>© 2026 CDK GPT HNQ · cdkgpt.hangngaquan.dev</div>
+    <div class="footer-links">
+      <a href="#home">Trang chủ</a>
+      <a href="#pricing">Gói CDK</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://t.me/hangngaquan_bot" target="_blank" rel="noopener">Telegram @hangngaquan_bot</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
