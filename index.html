@@ -322,28 +322,24 @@
         </div>
         <div class="faq">
           <details class="faq-item reveal" open>
-            <summary>Nâng cấp ChatGPT Plus bằng CDK là gì?</summary>
-            <p>Đây là quy trình dùng mã CDK hợp lệ để hỗ trợ kích hoạt gói ChatGPT Plus. Người dùng nhận mã, kiểm tra
-              trạng thái và làm theo hướng dẫn để hoàn tất.</p>
+            <summary>Quy trình nâng cấp ChatGPT Plus bằng CDK hoạt động thế nào?</summary>
+            <p>Đây là giải pháp kích hoạt gói dịch vụ Plus chính thức thông qua mã quà tặng (CDK). Hệ thống sẽ xác thực mã CDK của bạn và tiến hành đồng bộ nâng cấp tự động qua cổng API bảo mật mà không yêu cầu bạn phải can thiệp kỹ thuật phức tạp.</p>
           </details>
           <details class="faq-item reveal">
-            <summary>Có cần chia sẻ tài khoản hay mật khẩu không?</summary>
-            <p>Không. Bạn chỉ cần mã CDK, mã đơn hàng hoặc thông tin liên hệ để đối chiếu khi cần hỗ trợ.</p>
+            <summary>Tôi có cần cung cấp mật khẩu tài khoản OpenAI không?</summary>
+            <p>Hoàn toàn không. Chúng tôi không bao giờ yêu cầu bạn cung cấp mật khẩu. Bạn chỉ cần sử dụng Access Token (mã phiên làm việc tạm thời) để hệ thống gửi yêu cầu nâng cấp lên OpenAI. Tài khoản của bạn luôn được bảo đảm an toàn 100%.</p>
           </details>
           <details class="faq-item reveal">
-            <summary>CDK có tự động nâng cấp tài khoản không?</summary>
-            <p>Nội dung website mô tả quy trình hỗ trợ kích hoạt bằng CDK hợp lệ. Việc đăng nhập và xác nhận tài khoản
-              nên diễn ra qua kênh chính thức, do chính chủ tài khoản thực hiện.</p>
+            <summary>Dữ liệu kết nối có được bảo mật không?</summary>
+            <p>Có. Toàn bộ thông tin gửi đi từ trình duyệt (bao gồm mã CDK và Access Token) đều được mã hóa RC4 trước khi truyền tải qua máy chủ Cloudflare Worker trung gian. Điều này giúp ngăn chặn hoàn toàn việc rò rỉ dữ liệu hoặc bị đánh cắp thông tin trên đường truyền.</p>
           </details>
           <details class="faq-item reveal">
-            <summary>Nếu kích hoạt lỗi thì sao?</summary>
-            <p>Người dùng gửi mã CDK và ảnh trạng thái lỗi không chứa dữ liệu nhạy cảm. Đội hỗ trợ kiểm tra mã, trạng
-              thái thanh toán và hướng dẫn bước tiếp theo.</p>
+            <summary>Access Token có bị lưu trữ lại trên hệ thống không?</summary>
+            <p>Không. Access Token chỉ được sử dụng một lần duy nhất trong bộ nhớ đệm (RAM) của máy chủ để hoàn tất phiên gửi yêu cầu nâng cấp lên OpenAI và tự động hủy bỏ ngay sau đó. Chúng tôi cam kết không lưu trữ bất kỳ thông tin đăng nhập nào của người dùng.</p>
           </details>
           <details class="faq-item reveal">
-            <summary>Website này có backend chưa?</summary>
-            <p>Chưa. Đây là bản web tĩnh HTML, CSS, JS. Các nút và trạng thái hiện là giao diện mẫu để sau này kết nối
-              hệ thống thật nếu cần.</p>
+            <summary>Tôi cần làm gì nếu quá trình kích hoạt gặp sự cố?</summary>
+            <p>Hệ thống tự động có tỷ lệ thành công rất cao. Tuy nhiên, nếu gặp sự cố kết nối hoặc lỗi đồng bộ, bạn vui lòng liên hệ ngay với bộ phận hỗ trợ qua Telegram Bot, cung cấp Mã đơn hàng (Display ID) để kỹ thuật viên hỗ trợ kiểm tra và xử lý thủ công lập tức.</p>
           </details>
         </div>
       </div>
