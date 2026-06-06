@@ -93,6 +93,33 @@
     return message;
   }
 
+  function rc4(key, str) {
+    var s = [], j = 0, x, res = '';
+    for (var i = 0; i < 256; i++) {
+      s[i] = i;
+    }
+    for (var i = 0; i < 256; i++) {
+      j = (j + s[i] + key.charCodeAt(i % key.length)) % 256;
+      x = s[i]; s[i] = s[j]; s[j] = x;
+    }
+    var i = 0; j = 0;
+    for (var y = 0; y < str.length; y++) {
+      i = (i + 1) % 256;
+      j = (j + s[i]) % 256;
+      x = s[i]; s[i] = s[j]; s[j] = x;
+      res += String.fromCharCode(str.charCodeAt(y) ^ s[(s[i] + s[j]) % 256]);
+    }
+    return res;
+  }
+
+  function encryptPayload(payload) {
+    var key = "HNQ_SECURE_KEY_2026";
+    var rawStr = JSON.stringify(payload);
+    var utf8Str = btoa(unescape(encodeURIComponent(rawStr)));
+    var encrypted = rc4(key, utf8Str);
+    return btoa(encrypted);
+  }
+
   if (cdkForm) {
     cdkForm.addEventListener("submit", async function (event) {
       event.preventDefault();
@@ -122,8 +149,8 @@
         } else {
           var response = await fetch(CODE_INFO_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ code: code })
+            headers: { "Content-Type": "text/plain" },
+            body: encryptPayload({ code: code })
           });
           data = await response.json();
         }
@@ -182,8 +209,8 @@
         } else {
           var response = await fetch(CODE_SUBMIT_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
+            headers: { "Content-Type": "text/plain" },
+            body: encryptPayload({
               code: code,
               at: sessionText
             })
@@ -421,8 +448,8 @@
         } else {
           var response = await fetch(CODE_STATUS_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ order_id: orderId })
+            headers: { "Content-Type": "text/plain" },
+            body: encryptPayload({ order_id: orderId })
           });
           data = await response.json();
         }
@@ -493,4 +520,98 @@
       row.querySelector("b").textContent = "100%";
     });
   }
+
+  // Disables console logging in production to prevent inspecting variables
+  if (!isLocalTest) {
+    var noop = function () {};
+    window.console = {
+      log: noop,
+      warn: noop,
+      error: noop,
+      info: noop,
+      debug: noop,
+      clear: noop
+    };
+  }
+
+  // Anti-F12 & keyboard lock
+  document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+  }, false);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.keyCode === 123) {
+      e.preventDefault();
+      return false;
+    }
+    if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+      e.preventDefault();
+      return false;
+    }
+    if (e.metaKey && e.altKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+      e.preventDefault();
+      return false;
+    }
+    if (e.ctrlKey && e.keyCode === 85) {
+      e.preventDefault();
+      return false;
+    }
+  }, false);
+
+  // Severe DevTools detection & anti-debugger
+  var devtoolsOpen = false;
+  var threshold = 160;
+  
+  // Custom UI overlay to disable page interaction
+  var lockOverlay = document.createElement("div");
+  lockOverlay.style.position = "fixed";
+  lockOverlay.style.top = "0";
+  lockOverlay.style.left = "0";
+  lockOverlay.style.width = "100%";
+  lockOverlay.style.height = "100%";
+  lockOverlay.style.backgroundColor = "rgba(10,10,10,0.98)";
+  lockOverlay.style.color = "var(--err, #ff5e7a)";
+  lockOverlay.style.zIndex = "999999";
+  lockOverlay.style.display = "flex";
+  lockOverlay.style.flexDirection = "column";
+  lockOverlay.style.alignItems = "center";
+  lockOverlay.style.justifyContent = "center";
+  lockOverlay.style.fontFamily = "var(--display, sans-serif)";
+  lockOverlay.style.textAlign = "center";
+  lockOverlay.style.padding = "2rem";
+  lockOverlay.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="font-size: 4rem; margin-bottom: 1.5rem; color: var(--accent, #ff2d2d);"></i>' +
+                          '<h1 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; color: #fff;">PHÁT HIỆN DEVTOOLS</h1>' +
+                          '<p style="max-width: 500px; color: var(--ink-dim, #a8a89e); line-height: 1.6; font-size: 0.95rem;">' +
+                          'Vui lòng đóng công cụ nhà phát triển (DevTools / F12) và tải lại trang để tiếp tục sử dụng dịch vụ kích hoạt CDK.' +
+                          '</p>';
+
+  function lockPage() {
+    if (!document.body.contains(lockOverlay)) {
+      document.body.appendChild(lockOverlay);
+      document.body.style.overflow = "hidden";
+    }
+  }
+
+  // Detect using timing anomalies (debugger statement slows down execution when DevTools is active)
+  setInterval(function () {
+    var startTime = performance.now();
+    (function () {
+      debugger;
+    })();
+    var endTime = performance.now();
+    if (endTime - startTime > threshold) {
+      devtoolsOpen = true;
+      lockPage();
+    }
+  }, 200);
+
+  // Secondary outerHeight/innerWidth detection
+  setInterval(function() {
+    var widthThreshold = window.outerWidth - window.innerWidth > threshold;
+    var heightThreshold = window.outerHeight - window.innerHeight > threshold;
+    if (widthThreshold || heightThreshold) {
+      devtoolsOpen = true;
+      lockPage();
+    }
+  }, 500);
 })();
