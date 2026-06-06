@@ -164,7 +164,7 @@
           setCdkResult("err", "fa-circle-xmark", normalizeCdkMessage(data.msg));
         }
       } catch (error) {
-        setCdkResult("err", "fa-wifi", "Không thể kết nối API kiểm tra CDK. Vui lòng thử lại hoặc liên hệ Telegram bot.");
+        setCdkResult("err", "fa-wifi", "Không thể kết nối API kiểm tra CDK. Chi tiết: " + (error.message || error) + ". Vui lòng thử lại hoặc liên hệ Telegram bot.");
       } finally {
         cdkSubmit.disabled = false;
         cdkSubmit.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Kiểm tra';
@@ -230,7 +230,7 @@
           resetSessionSubmitButton();
         }
       } catch (error) {
-        setCdkResult("err", "fa-wifi", "Không thể gửi yêu cầu kích hoạt. Vui lòng kiểm tra lại kết nối mạng hoặc thử lại.");
+        setCdkResult("err", "fa-wifi", "Không thể gửi yêu cầu kích hoạt. Chi tiết: " + (error.message || error) + ". Vui lòng kiểm tra lại kết nối mạng hoặc thử lại.");
         resetSessionSubmitButton();
       }
     });
@@ -482,7 +482,7 @@
       } catch (error) {
         if (attempts >= maxAttempts) {
           clearInterval(timer);
-          setCdkResult("err", "fa-wifi", "Lỗi kết nối mạng khi kiểm tra trạng thái. Mã đơn: " + displayId);
+          setCdkResult("err", "fa-wifi", "Lỗi kết nối mạng khi kiểm tra trạng thái (Chi tiết: " + (error.message || error) + "). Mã đơn: " + displayId);
           resetSessionSubmitButton();
         }
       }
