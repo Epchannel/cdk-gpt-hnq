@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HNQ CDK Encoder - Công cụ tạo mã độc quyền</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg-2: #0f0f0f;
+      --ink: #f5f5f0;
+      --ink-dim: #a8a89e;
+      --line: rgba(245,245,240,.08);
+      --accent: #ff2d2d;
+      --accent-2: #ffb800;
+      --mono: "JetBrains Mono", monospace;
+      --display: "Bricolage Grotesque", sans-serif;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: var(--display);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      background-color: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 650px;
+      padding: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      color: var(--ink-dim);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+      color: var(--accent-2);
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      padding: 0.8rem 1rem;
+      transition: all 0.2s;
+    }
+
+    textarea:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: 0;
+      border-radius: 999px;
+      color: #000;
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 10px 20px -5px rgba(255, 45, 45, 0.3);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 25px -5px rgba(255, 45, 45, 0.5);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .result-group {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 0;
+      color: var(--ink-dim);
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: color 0.2s;
+    }
+
+    .copy-btn:hover {
+      color: #fff;
+    }
+
+    .output-box {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: var(--ink-fade, #5a5a55);
+      text-align: center;
+      font-family: var(--mono);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>HNQ CDK ENCODER</h1>
+    <p class="subtitle">Mã hóa mã CDK từ Backend (BX-...) sang mã thương hiệu độc quyền (HNQ-...)</p>
+
+    <div class="form-group">
+      <label for="inputCodes">Mã gốc từ Backend (Mỗi mã 1 dòng)</label>
+      <textarea id="inputCodes" rows="5" placeholder="Ví dụ:&#10;BX-UKV4ZWFL&#10;BX-PRSG6P9U&#10;BX-8UC2K9FS"></textarea>
+    </div>
+
+    <button class="btn" onclick="generateHNQCodes()">
+      <i class="fa-solid fa-wand-magic-sparkles"></i> Tạo mã độc quyền HNQ
+    </button>
+
+    <div class="result-group" id="resultGroup" style="display: none;">
+      <div class="result-header">
+        <label>Danh sách mã HNQ đã tạo</label>
+        <button class="copy-btn" onclick="copyOutput()">
+          <i class="fa-regular fa-copy"></i> Sao chép tất cả
+        </button>
+      </div>
+      <textarea id="outputCodes" rows="5" readonly></textarea>
+    </div>
+
+    <div class="footer">
+      CDK GPT HNQ · Bảo mật & Độc quyền
+    </div>
+  </div>
+
+  <script>
+    const CHARSET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const CIPHER_KEY = "HNQ2026";
+
+    // Random string generator for prefix (5 chars)
+    function generateRandomPrefix() {
+      let result = "";
+      for (let i = 0; i < 5; i++) {
+        result += CHARSET[Math.floor(Math.random() * CHARSET.length)];
+      }
+      return result;
+    }
+
+    // Reversible suffix obfuscator
+    function obfuscateSuffix(suffix) {
+      let result = "";
+      for (let i = 0; i < suffix.length; i++) {
+        const char = suffix[i];
+        const idx = CHARSET.indexOf(char);
+        if (idx === -1) {
+          result += char;
+          continue;
+        }
+        const keyChar = CIPHER_KEY[i % CIPHER_KEY.length];
+        const keyShift = CHARSET.indexOf(keyChar);
+        const newIdx = (idx + keyShift + i) % CHARSET.length;
+        result += CHARSET[newIdx];
+      }
+      return result;
+    }
+
+    function generateHNQCodes() {
+      const input = document.getElementById("inputCodes").value.trim();
+      if (!input) {
+        alert("Vui lòng nhập ít nhất một mã CDK gốc!");
+        return;
+      }
+
+      const lines = input.split("\n");
+      const results = [];
+
+      for (let line of lines) {
+        let clean = line.trim().replace(/\s+/g, "").toUpperCase();
+        if (!clean) continue;
+
+        // Strip "BX-" if present
+        let suffix = clean;
+        if (clean.indexOf("BX-") === 0) {
+          suffix = clean.substring(3);
+        }
+
+        // We expect an 8-character suffix
+        if (suffix.length !== 8) {
+          results.push(`// LỖI: Mã "${line.trim()}" phải có phần đuôi 8 ký tự (ví dụ: BX-UKV4ZWFL)`);
+          continue;
+        }
+
+        const prefix = generateRandomPrefix();
+        const obfuscated = obfuscateSuffix(suffix);
+        const hnqCdk = `HNQ-${prefix}-${obfuscated}`;
+        results.push(hnqCdk);
+      }
+
+      document.getElementById("outputCodes").value = results.join("\n");
+      document.getElementById("resultGroup").style.display = "block";
+    }
+
+    function copyOutput() {
+      const output = document.getElementById("outputCodes");
+      output.select();
+      document.execCommand("copy");
+      
+      const copyBtn = document.querySelector(".copy-btn");
+      copyBtn.innerHTML = '<i class="fa-solid fa-check" style="color: #4ade80;"></i> Đã sao chép';
+      setTimeout(() => {
+        copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Sao chép tất cả';
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

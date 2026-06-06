@@ -120,14 +120,55 @@
     return btoa(encrypted);
   }
 
+  var CHARSET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  var CIPHER_KEY = "HNQ2026";
+
+  function deobfuscateSuffix(suffix) {
+    var result = "";
+    for (var i = 0; i < suffix.length; i++) {
+      var char = suffix[i];
+      var idx = CHARSET.indexOf(char);
+      if (idx === -1) {
+        result += char;
+        continue;
+      }
+      var keyChar = CIPHER_KEY[i % CIPHER_KEY.length];
+      var keyShift = CHARSET.indexOf(keyChar);
+      var newIdx = (idx - keyShift - i) % CHARSET.length;
+      if (newIdx < 0) newIdx += CHARSET.length;
+      result += CHARSET[newIdx];
+    }
+    return result;
+  }
+
+  function resolveBackendCdk(input) {
+    if (!input) return "";
+    var cleaned = input.replace(/\s+/g, "").toUpperCase();
+    
+    // Check if it starts with HNQ
+    if (cleaned.indexOf("HNQ") === 0) {
+      // Strip hyphens
+      var raw = cleaned.replace(/-/g, "");
+      // Length should be 16: "HNQ" (3) + 5 (random) + 8 (obfuscated) = 16
+      if (raw.length === 16) {
+        var obfuscatedSuffix = raw.substring(8); // last 8 characters
+        var decodedSuffix = deobfuscateSuffix(obfuscatedSuffix);
+        return "BX-" + decodedSuffix;
+      }
+    }
+    return cleaned; // Fallback to raw input if it's already BX- format
+  }
+
   if (cdkForm) {
     cdkForm.addEventListener("submit", async function (event) {
       event.preventDefault();
-      var code = cdkInput.value.trim();
-      if (!code) {
+      var rawCode = cdkInput.value.trim();
+      if (!rawCode) {
         setCdkResult("err", "fa-triangle-exclamation", "Vui lòng nhập mã CDK trước khi kiểm tra.");
         return;
       }
+
+      var code = resolveBackendCdk(rawCode);
 
       cdkSubmit.disabled = true;
       cdkSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang kiểm tra';
@@ -175,12 +216,14 @@
   if (sessionForm) {
     sessionForm.addEventListener("submit", async function (event) {
       event.preventDefault();
-      var code = cdkInput.value.trim();
+      var rawCode = cdkInput.value.trim();
       var sessionText = sessionInput.value.trim();
-      if (!code) {
+      if (!rawCode) {
         setCdkResult("err", "fa-triangle-exclamation", "Vui lòng nhập mã CDK ở Step 1 trước.");
         return;
       }
+
+      var code = resolveBackendCdk(rawCode);
       if (!sessionText) {
         setCdkResult("err", "fa-triangle-exclamation", "Vui lòng nhập Session / Access Token.");
         return;
