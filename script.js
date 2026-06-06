@@ -438,7 +438,7 @@
                               "</span>";
             setCdkResult("ok", "fa-circle-check", successText);
             sessionInput.value = "";
-            updateSessionSummary();
+            if (sessionSummaryBox) sessionSummaryBox.hidden = true;
             resetSessionSubmitButton();
           } else if (data.status === "processing") {
             setCdkResult("ok", "fa-circle-notch fa-spin", "Đang tiến hành kích hoạt Plus cho " + (data.email || email) + "... Trạng thái: Đang xử lý (Mã đơn: " + displayId + ", kiểm tra lần " + attempts + "). Quá trình này có thể kéo dài từ 1 đến 30 phút, vui lòng giữ tab này mở.");
