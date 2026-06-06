@@ -89,6 +89,7 @@
   function normalizeCdkMessage(message) {
     if (!message) return "CDK không hợp lệ hoặc đã hết lượt.";
     if (message.indexOf("卡密配额已用完") !== -1) return "CDK đã hết lượt sử dụng.";
+    if (message.indexOf("卡密不存在") !== -1) return "Mã CDK không tồn tại trên hệ thống.";
     return message;
   }
 
