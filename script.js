@@ -623,16 +623,72 @@
   lockOverlay.style.textAlign = "center";
   lockOverlay.style.padding = "2rem";
   lockOverlay.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="font-size: 4rem; margin-bottom: 1.5rem; color: var(--accent, #ff2d2d);"></i>' +
-                          '<h1 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; color: #fff;">PHÁT HIỆN DEVTOOLS</h1>' +
-                          '<p style="max-width: 500px; color: var(--ink-dim, #a8a89e); line-height: 1.6; font-size: 0.95rem;">' +
+                          '<h1 id="lockTitle" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; color: #fff;">PHÁT HIỆN DEVTOOLS</h1>' +
+                          '<p id="lockMsg" style="max-width: 500px; color: var(--ink-dim, #a8a89e); line-height: 1.6; font-size: 0.95rem;">' +
                           'Vui lòng đóng công cụ nhà phát triển (DevTools / F12) và tải lại trang để tiếp tục sử dụng dịch vụ kích hoạt CDK.' +
                           '</p>';
 
-  function lockPage() {
+  function lockPage(title, message) {
+    if (title && message) {
+      var tEl = lockOverlay.querySelector("#lockTitle");
+      var mEl = lockOverlay.querySelector("#lockMsg");
+      if (tEl) tEl.textContent = title;
+      if (mEl) mEl.textContent = message;
+    }
     if (!document.body.contains(lockOverlay)) {
       document.body.appendChild(lockOverlay);
       document.body.style.overflow = "hidden";
     }
+  }
+
+  // Bot, Crawler, Headless Browser detection
+  function detectBot() {
+    if (isLocalTest) return false;
+
+    // 1. Check navigator.webdriver (common headless/automation tool flag)
+    if (navigator.webdriver) {
+      return true;
+    }
+
+    // 2. Check for automation library signatures
+    var botVariables = [
+      '__webdriver_evaluate', '__selenium_evaluate', '__webdriver_script_fn',
+      '__webdriver_unwrapped', '_selenium', '_phantom', 'callPhantom', 'phantom'
+    ];
+    for (var i = 0; i < botVariables.length; i++) {
+      if (window[botVariables[i]] || document[botVariables[i]]) {
+        return true;
+      }
+    }
+
+    // 3. User-Agent checking
+    var ua = navigator.userAgent.toLowerCase();
+    var botWords = [
+      'headless', 'bot', 'crawl', 'spider', 'scrap', 'curl', 'wget', 'python',
+      'puppeteer', 'selenium', 'playwright', 'zgrab', 'nmap', 'go-http-client',
+      'http-client', 'scraper', 'screaming', 'semrush'
+    ];
+    for (var j = 0; j < botWords.length; j++) {
+      if (ua.indexOf(botWords[j]) !== -1) {
+        return true;
+      }
+    }
+
+    // 4. Headless Chrome specific check (chrome object is missing or incomplete, languages missing)
+    var isChrome = ua.indexOf('chrome') !== -1 && ua.indexOf('edge') === -1;
+    if (isChrome && (!window.chrome || !window.chrome.runtime)) {
+      return true;
+    }
+    if (!navigator.languages || navigator.languages.length === 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // Lock page immediately if bot/crawler is detected
+  if (detectBot()) {
+    lockPage("TRUY CẬP BỊ TỪ CHỐI", "Hệ thống phát hiện hành vi tự động hoặc công cụ thu thập dữ liệu (Crawler/Bot). Vui lòng sử dụng trình duyệt tiêu chuẩn để truy cập.");
   }
 
   // Detect using timing anomalies (debugger statement slows down execution when DevTools is active)
@@ -644,7 +700,7 @@
     var endTime = performance.now();
     if (endTime - startTime > threshold) {
       devtoolsOpen = true;
-      lockPage();
+      lockPage("PHÁT HIỆN DEVTOOLS", "Vui lòng đóng công cụ nhà phát triển (DevTools / F12) và tải lại trang để tiếp tục sử dụng dịch vụ kích hoạt CDK.");
     }
   }, 200);
 
@@ -654,7 +710,7 @@
     var heightThreshold = window.outerHeight - window.innerHeight > threshold;
     if (widthThreshold || heightThreshold) {
       devtoolsOpen = true;
-      lockPage();
+      lockPage("PHÁT HIỆN DEVTOOLS", "Vui lòng đóng công cụ nhà phát triển (DevTools / F12) và tải lại trang để tiếp tục sử dụng dịch vụ kích hoạt CDK.");
     }
   }, 500);
 })();
