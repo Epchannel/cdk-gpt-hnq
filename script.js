@@ -72,9 +72,13 @@
   var summaryEmail = document.getElementById("summaryEmail");
   var summaryPlan = document.getElementById("summaryPlan");
   var summaryStructure = document.getElementById("summaryStructure");
-  var CODE_INFO_URL = "https://baxigpt.com/api/code-info";
-  var CODE_SUBMIT_URL = "https://baxigpt.com/api/submit";
-  var CODE_STATUS_URL = "https://baxigpt.com/api/status";
+  // URL gốc của API. Để fix CORS trên GitHub Pages/Local, hãy triển khai Cloudflare Workers làm Proxy
+  // và đổi giá trị này thành URL của Worker của bạn (ví dụ: "https://your-worker.workers.dev/api").
+  var API_BASE_URL = "https://baxigpt.com/api";
+
+  var CODE_INFO_URL = API_BASE_URL + "/code-info";
+  var CODE_SUBMIT_URL = API_BASE_URL + "/submit";
+  var CODE_STATUS_URL = API_BASE_URL + "/status";
   var lastCdkSuccessMsg = "";
 
   function setCdkResult(type, icon, text) {
