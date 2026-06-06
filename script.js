@@ -645,8 +645,8 @@
   function detectBot() {
     if (isLocalTest) return false;
 
-    // 1. Check navigator.webdriver (common headless/automation tool flag)
-    if (navigator.webdriver) {
+    // 1. Check navigator.webdriver (strictly check if it is explicitly true)
+    if (navigator.webdriver === true) {
       return true;
     }
 
@@ -661,26 +661,20 @@
       }
     }
 
-    // 3. User-Agent checking
+    // 3. User-Agent checking (only block obvious bots/scrapers)
     var ua = navigator.userAgent.toLowerCase();
     var botWords = [
-      'headless', 'bot', 'crawl', 'spider', 'scrap', 'curl', 'wget', 'python',
-      'puppeteer', 'selenium', 'playwright', 'zgrab', 'nmap', 'go-http-client',
-      'http-client', 'scraper', 'screaming', 'semrush'
+      'headlesschrome', 'googlebot', 'bingbot', 'yandexbot', 'ahrefsbot',
+      'baiduspider', 'facebookexternalhit', 'twitterbot', 'rogerbot', 
+      'linkedinbot', 'embedly', 'quora link preview', 'showyoubot', 
+      'outbrain', 'pinterest/0.', 'developers.google.com/+/web/snippet',
+      'slackbot', 'vkshare', 'w3c_validator', 'redditbot', 'applebot',
+      'semrushbot', 'mj12bot', 'screaming frog', 'semrush'
     ];
     for (var j = 0; j < botWords.length; j++) {
       if (ua.indexOf(botWords[j]) !== -1) {
         return true;
       }
-    }
-
-    // 4. Headless Chrome specific check (chrome object is missing or incomplete, languages missing)
-    var isChrome = ua.indexOf('chrome') !== -1 && ua.indexOf('edge') === -1;
-    if (isChrome && (!window.chrome || !window.chrome.runtime)) {
-      return true;
-    }
-    if (!navigator.languages || navigator.languages.length === 0) {
-      return true;
     }
 
     return false;
