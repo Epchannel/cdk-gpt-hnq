@@ -266,7 +266,7 @@
           var displayId = data.display_id || ("PAY-" + orderId.substring(0, 8).toUpperCase());
           var email = data.email || "";
           
-          setCdkResult("ok", "fa-circle-notch fa-spin", "Khởi tạo thành công! Đang xử lý kích hoạt Plus (Mã đơn: " + displayId + ")...");
+          setCdkResult("ok", "fa-circle-notch fa-spin", "Kết nối hệ thống thành công! Đang thực hiện tiến trình nâng cấp tài khoản...");
           pollStatus(orderId, displayId, email);
         } else {
           setCdkResult("err", "fa-circle-xmark", normalizeCdkMessage(data.msg));
@@ -501,17 +501,17 @@
           if (data.status === "paid") {
             clearInterval(timer);
             var successEmail = data.email || email;
-            var successText = "Chúc mừng! ChatGPT Plus đã được kích hoạt thành công cho tài khoản <strong>" + successEmail + "</strong>! Đơn hàng " + displayId + " hoàn tất.<br>" +
-                              "<span style='display: block; margin-top: 0.6rem; font-size: 0.8rem; color: #b9f7ce; opacity: 0.92; line-height: 1.4;'>" +
-                              "⏳ Sau khi hệ thống báo kích hoạt thành công, OpenAI thường cần thêm từ 1–5 phút để đồng bộ hóa dữ liệu. " +
-                              "Nếu logo Plus chưa xuất hiện ngay sau khi bạn tải lại chatgpt.com, vui lòng kiên nhẫn đợi vài phút rồi tải lại trang nhé!" +
+            var successText = "Kích hoạt thành công! Gói <strong>ChatGPT Plus</strong> đã được đồng bộ hóa thành công cho tài khoản <strong>" + successEmail + "</strong>.<br>" +
+                              "<span style='display: block; margin-top: 0.6rem; font-size: 0.85rem; color: #b9f7ce; opacity: 0.92; line-height: 1.5;'>" +
+                              "⏳ Hệ thống OpenAI thường cần từ 1 đến 5 phút để đồng bộ trạng thái tài khoản. " +
+                              "Nếu biểu tượng Plus chưa hiển thị ngay, bạn vui lòng chờ vài phút rồi tải lại trang chatgpt.com nhé!" +
                               "</span>";
             setCdkResult("ok", "fa-circle-check", successText);
             sessionInput.value = "";
             if (sessionSummaryBox) sessionSummaryBox.hidden = true;
             resetSessionSubmitButton();
           } else if (data.status === "processing") {
-            setCdkResult("ok", "fa-circle-notch fa-spin", "Đang tiến hành kích hoạt Plus cho " + (data.email || email) + "... Trạng thái: Đang xử lý (Mã đơn: " + displayId + ", kiểm tra lần " + attempts + "). Quá trình này có thể kéo dài từ 1 đến 30 phút, vui lòng giữ tab này mở.");
+            setCdkResult("ok", "fa-circle-notch fa-spin", "Yêu cầu nâng cấp Plus cho " + (data.email || email) + " đang được hệ thống xử lý tự động (Đang đồng bộ lần " + attempts + "). Vui lòng giữ tab này hoạt động...");
           } else {
             clearInterval(timer);
             setCdkResult("err", "fa-circle-xmark", "Đơn kích hoạt thất bại. Trạng thái: " + (data.status || "lỗi") + ". Mã đơn: " + displayId);
