@@ -90,6 +90,7 @@
     if (!message) return "CDK không hợp lệ hoặc đã hết lượt.";
     if (message.indexOf("卡密配额已用完") !== -1) return "CDK đã hết lượt sử dụng.";
     if (message.indexOf("卡密不存在") !== -1) return "Mã CDK không tồn tại trên hệ thống.";
+    if (message.indexOf("服务端凭证临时异常") !== -1) return "Server đang lỗi tạm thời, bạn chờ một lúc rồi thử lại.";
     return message;
   }
 
@@ -519,7 +520,7 @@
           }
         } else {
           clearInterval(timer);
-          setCdkResult("err", "fa-circle-xmark", data.msg || "Kích hoạt thất bại. Mã đơn: " + displayId);
+          setCdkResult("err", "fa-circle-xmark", data.msg ? normalizeCdkMessage(data.msg) : ("Kích hoạt thất bại. Mã đơn: " + displayId));
           resetSessionSubmitButton();
         }
       } catch (error) {
